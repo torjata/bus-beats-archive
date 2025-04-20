@@ -35,66 +35,80 @@ export function PlaylistCard({
   });
 
   return (
-    <Link to={`/playlist/${id}`} className="playlist-card group block">
-      <div className="relative overflow-hidden">
-        <div className={`platform-badge ${platform === "apple" ? "bg-music-apple/80" : "bg-music-spotify/80"}`}>
-          {platform === "apple" ? (
-            <div className="flex items-center gap-1">
-              <Apple className="h-3 w-3" />
-              <span>Apple Music</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1">
-              <Music className="h-3 w-3" />
-              <span>Spotify</span>
-            </div>
-          )}
-        </div>
-        <AspectRatio ratio={1}>
-          <img
-            src={coverImage}
-            alt={title}
-            className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
-          />
-        </AspectRatio>
-      </div>
-      <div className="p-4 bg-gradient-to-b from-white/5 to-white/20 backdrop-blur-md dark:from-black/5 dark:to-black/20">
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="font-semibold line-clamp-1 text-blue-900 dark:text-blue-100">
-              {title}
-            </h3>
-            <Link 
-              to={`/artist/${artistId}`} 
-              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {artistName}
-            </Link>
+    <Link to={`/playlist/${id}`} className="block transform transition-all duration-300 hover:scale-102 hover:-translate-y-1">
+      <div className="rounded-xl overflow-hidden shadow-lg bg-gradient-to-b from-white/10 via-white/5 to-white/0 backdrop-blur-md border border-white/20 dark:border-white/10">
+        <div className="relative">
+          {/* Platform Badge */}
+          <div className={`absolute top-3 right-3 z-10 rounded-full px-2 py-1 text-xs font-medium text-white backdrop-blur-md ${
+            platform === "apple" ? "bg-music-apple/80" : "bg-music-spotify/80"
+          }`}>
+            {platform === "apple" ? (
+              <div className="flex items-center gap-1">
+                <Apple className="h-3 w-3" />
+                <span>Music</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <Music className="h-3 w-3" />
+                <span>Spotify</span>
+              </div>
+            )}
           </div>
-          <ShareButton 
-            url={`/playlist/${id}`} 
-            title={`${title} by ${artistName}`} 
-          />
+          
+          {/* Album Cover */}
+          <AspectRatio ratio={1} className="overflow-hidden">
+            <img
+              src={coverImage}
+              alt={title}
+              className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/30"></div>
+          </AspectRatio>
         </div>
-        {description && (
-          <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
-            {description}
-          </p>
-        )}
-        <div className="mt-3 flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">{formattedDate}</span>
-          <a
-            href={externalUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className={`text-xs font-medium hover:underline ${
-              platform === "apple" ? "text-music-apple" : "text-music-spotify"
-            }`}
-          >
-            Listen
-          </a>
+        
+        {/* Content */}
+        <div className="p-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-bold text-base md:text-lg line-clamp-1 text-blue-900 dark:text-blue-100">
+                {title}
+              </h3>
+              <Link 
+                to={`/artist/${artistId}`} 
+                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {artistName}
+              </Link>
+            </div>
+            <ShareButton 
+              url={`/playlist/${id}`} 
+              title={`${title} by ${artistName}`} 
+            />
+          </div>
+          
+          {description && (
+            <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+              {description}
+            </p>
+          )}
+          
+          <div className="mt-3 flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">{formattedDate}</span>
+            <a
+              href={externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+                platform === "apple" 
+                  ? "bg-music-apple/10 text-music-apple hover:bg-music-apple/20" 
+                  : "bg-music-spotify/10 text-music-spotify hover:bg-music-spotify/20"
+              }`}
+            >
+              Listen
+            </a>
+          </div>
         </div>
       </div>
     </Link>
