@@ -12,7 +12,7 @@ interface ArtistCardProps {
 
 export function ArtistCard({ id, name, profileImage, description, playlistCount }: ArtistCardProps) {
   return (
-    <Link to={`/artist/${id}`} className="artist-card block">
+    <Link to={`/artist/${id}`} className="artist-card block p-3 h-full">
       <div className="overflow-hidden rounded-xl">
         <AspectRatio ratio={1}>
           <img 
@@ -23,9 +23,9 @@ export function ArtistCard({ id, name, profileImage, description, playlistCount 
         </AspectRatio>
       </div>
       <div className="mt-3">
-        <h3 className="text-lg font-semibold">{name}</h3>
+        <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">{name}</h3>
         <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{description}</p>
-        <p className="mt-1 text-xs text-muted-foreground">{playlistCount} playlists</p>
+        <p className="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">{playlistCount} playlists</p>
       </div>
     </Link>
   );
