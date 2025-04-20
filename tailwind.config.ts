@@ -52,6 +52,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+                music: {
+                    purple: {
+                        DEFAULT: '#9b87f5',
+                        dark: '#6E59A5',
+                        light: '#E5DEFF'
+                    },
+                    spotify: '#1DB954',
+                    apple: '#FA2C56'
+                },
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
