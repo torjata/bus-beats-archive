@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ArtistCard } from "@/components/ArtistCard";
@@ -8,8 +7,10 @@ import { artists } from "@/data/artists";
 import { playlists, getPlaylistCount } from "@/data/playlists";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Apple, Music } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import HeroAnimation from "@/components/HeroAnimation";
+import { MetaTags } from "@/components/MetaTags";
 
 const Index = () => {
   const [platform, setPlatform] = useState<"all" | "apple" | "spotify">("all");
@@ -18,73 +19,6 @@ const Index = () => {
   const filteredPlaylists = platform === "all" 
     ? featuredPlaylists 
     : featuredPlaylists.filter(playlist => playlist.platform === platform);
-
-  // Canvas WebGL animation
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = 480;
-    
-    const particles: Particle[] = [];
-    const particleCount = 100;
-    
-    // Create particles
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 4 + 1,
-        color: `rgba(255, 255, 255, ${Math.random() * 0.6 + 0.2})`,
-        speed: Math.random() * 0.8 + 0.2,
-      });
-    }
-    
-    // Animation function
-    function animate() {
-      // Clear canvas
-      ctx.clearRect(0, 0, width, height);
-      
-      // Update and draw particles
-      particles.forEach(particle => {
-        // Move particle
-        particle.y -= particle.speed;
-        
-        // Reset particle position if it goes off screen
-        if (particle.y < -10) {
-          particle.y = height + 10;
-          particle.x = Math.random() * width;
-        }
-        
-        // Draw particle
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.fill();
-      });
-      
-      requestAnimationFrame(animate);
-    }
-    
-    // Handle window resize
-    const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = 480;
-    };
-    
-    window.addEventListener('resize', handleResize);
-    animate();
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   // Animation variants
   const containerVariants = {
@@ -108,115 +42,107 @@ const Index = () => {
   
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+      {/* Meta Tags for sharing */}
+      <MetaTags />
+      
       <Header />
       
-      {/* Hero Section */}
+      {/* Hero Section with WebGL Animation */}
       <section className="relative overflow-hidden">
-        {/* WebGL Canvas Background */}
-        <canvas 
-          ref={canvasRef} 
-          className="absolute inset-0 w-full h-full z-0"
-          style={{ background: 'linear-gradient(to bottom right, #3b82f6, #4f46e5, #7c3aed)' }}
-        ></canvas>
+        <HeroAnimation />
         
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-indigo-900/60 z-10"></div>
-        
-        {/* Content */}
-        <div className="container relative z-20 py-16 md:py-24">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="max-w-3xl mx-auto text-center"
-          >
+        {/* Content overlay */}
+        <div className="absolute inset-0 z-30 flex items-center justify-center">
+          <div className="container relative z-20 py-16 md:py-24">
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-              className="mb-6 inline-block"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="max-w-3xl mx-auto text-center"
             >
-              <div className="bg-white/10 backdrop-blur-md p-3 rounded-full border border-white/20 shadow-lg shadow-blue-500/10">
-                <h2 className="text-lg font-medium text-white">Because of you I shine</h2>
-              </div>
-            </motion.div>
-            
-            <motion.h1 
-              className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-white drop-shadow-lg"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-            >
-              BUS Beats Archive
-            </motion.h1>
-            
-            <motion.p 
-              className="text-lg md:text-xl mb-10 text-blue-100"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-            >
-              Discover the music that inspires your favorite BUS artists. 
-              Explore curated playlists from all 12 members on Apple Music and Spotify.
-            </motion.p>
-            
-            <motion.div 
-              className="flex flex-wrap justify-center gap-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-            >
-              <Button 
-                onClick={() => setPlatform("all")}
-                className={`px-6 py-6 rounded-full transition-colors text-base gap-2 ${
-                  platform === "all" 
-                    ? "bg-white text-blue-600 border-2 border-white hover:bg-blue-50" 
-                    : "bg-white/20 border border-white/30 hover:bg-white/30 text-white backdrop-blur-md"
-                }`}
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.7 }}
+                className="mb-6 inline-block"
               >
-                All Platforms
-              </Button>
-              <Button 
-                onClick={() => setPlatform("apple")}
-                className={`px-6 py-6 rounded-full transition-colors text-base gap-2 ${
-                  platform === "apple" 
-                    ? "bg-music-apple text-white border border-music-apple hover:bg-music-apple/90" 
-                    : "bg-white/20 border border-white/30 hover:bg-white/30 text-white backdrop-blur-md"
-                }`}
+                <div className="bg-white/10 backdrop-blur-md p-3 rounded-full border border-white/20 shadow-lg shadow-blue-500/10">
+                  <h2 className="text-lg font-medium text-white">Because of you I shine</h2>
+                </div>
+              </motion.div>
+              
+              <motion.h1 
+                className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-white drop-shadow-lg"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
               >
-                <Apple className="h-5 w-5 mr-1" /> Apple Music
-              </Button>
-              <Button 
-                onClick={() => setPlatform("spotify")}
-                className={`px-6 py-6 rounded-full transition-colors text-base gap-2 ${
-                  platform === "spotify" 
-                    ? "bg-music-spotify text-white border border-music-spotify hover:bg-music-spotify/90" 
-                    : "bg-white/20 border border-white/30 hover:bg-white/30 text-white backdrop-blur-md"
-                }`}
+                <span className="bg-gradient-to-r from-blue-100 to-white bg-clip-text text-transparent">BUS Beats Archive</span>
+              </motion.h1>
+              
+              <motion.p 
+                className="text-lg md:text-xl mb-10 text-blue-100"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
               >
-                <Music className="h-5 w-5 mr-1" /> Spotify
-              </Button>
-            </motion.div>
-            
-            <motion.div 
-              className="mt-12"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 0.8 }}
-            >
-              <Link to="/playlists">
-                <Button variant="link" className="text-blue-100 hover:text-white gap-2">
-                  View All Playlists <ArrowRight className="h-4 w-4" />
+                Discover the music that inspires your favorite BUS artists. 
+                Explore curated playlists from all 12 members on Apple Music and Spotify.
+              </motion.p>
+              
+              <motion.div 
+                className="flex flex-wrap justify-center gap-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.8 }}
+              >
+                <Button 
+                  onClick={() => setPlatform("all")}
+                  className={`px-6 py-6 rounded-full transition-colors text-base gap-2 ${
+                    platform === "all" 
+                      ? "bg-white text-blue-600 border-2 border-white hover:bg-blue-50" 
+                      : "bg-white/20 border border-white/30 hover:bg-white/30 text-white backdrop-blur-md"
+                  }`}
+                >
+                  All Platforms
                 </Button>
-              </Link>
+                <Button 
+                  onClick={() => setPlatform("apple")}
+                  className={`px-6 py-6 rounded-full transition-colors text-base gap-2 ${
+                    platform === "apple" 
+                      ? "bg-music-apple text-white border border-music-apple hover:bg-music-apple/90" 
+                      : "bg-white/20 border border-white/30 hover:bg-white/30 text-white backdrop-blur-md"
+                  }`}
+                >
+                  <Apple className="h-5 w-5 mr-1" /> Apple Music
+                </Button>
+                <Button 
+                  onClick={() => setPlatform("spotify")}
+                  className={`px-6 py-6 rounded-full transition-colors text-base gap-2 ${
+                    platform === "spotify" 
+                      ? "bg-music-spotify text-white border border-music-spotify hover:bg-music-spotify/90" 
+                      : "bg-white/20 border border-white/30 hover:bg-white/30 text-white backdrop-blur-md"
+                  }`}
+                >
+                  <Music className="h-5 w-5 mr-1" /> Spotify
+                </Button>
+              </motion.div>
+              
+              <motion.div 
+                className="mt-12"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 0.8 }}
+              >
+                <Link to="/playlists">
+                  <Button variant="link" className="text-blue-100 hover:text-white gap-2">
+                    View All Playlists <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
-        
-        {/* Decorative circles */}
-        <div className="absolute top-10 left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 right-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-1/4 w-24 h-24 bg-purple-400/20 rounded-full blur-3xl"></div>
       </section>
 
       {/* Featured Playlists */}
@@ -307,14 +233,5 @@ const Index = () => {
     </div>
   );
 };
-
-// TypeScript interface for particles
-interface Particle {
-  x: number;
-  y: number;
-  radius: number;
-  color: string;
-  speed: number;
-}
 
 export default Index;

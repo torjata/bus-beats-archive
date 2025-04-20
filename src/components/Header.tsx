@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Menu, Search, X } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SearchBar } from "./SearchBar";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -74,22 +74,11 @@ export function Header() {
       {/* Search Bar */}
       {isSearchOpen && (
         <div className="container pb-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search playlists..." 
-              className="pl-10"
-              autoFocus
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-1 top-1/2 transform -translate-y-1/2"
-              onClick={() => setIsSearchOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <SearchBar 
+            isOpen={isSearchOpen} 
+            onClose={() => setIsSearchOpen(false)}
+            autoFocus={true}
+          />
         </div>
       )}
 

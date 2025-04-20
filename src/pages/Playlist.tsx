@@ -7,6 +7,7 @@ import { getArtistById } from "@/data/artists";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MetaTags } from "@/components/MetaTags";
 
 const Playlist = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +17,10 @@ const Playlist = () => {
   if (!playlist || !artist) {
     return (
       <div className="flex min-h-screen flex-col">
+        <MetaTags 
+          title="Playlist Not Found | BUS Beats Archive"
+          description="The playlist you are looking for could not be found."
+        />
         <Header />
         <div className="container flex-1 flex items-center justify-center">
           <div className="glass-card p-8 text-center max-w-md mx-auto">
@@ -31,8 +36,18 @@ const Playlist = () => {
     );
   }
 
+  const playlistTitle = `${playlist.title} | ${artist.name}`;
+  const playlistDescription = playlist.description || `A playlist by ${artist.name} on ${playlist.platform === 'apple' ? 'Apple Music' : 'Spotify'}`;
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+      <MetaTags 
+        title={playlistTitle}
+        description={playlistDescription}
+        image={playlist.coverImage}
+        type="music.playlist"
+      />
+      
       <Header />
       
       <div className="container py-8">

@@ -1,18 +1,44 @@
 
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { PlaylistCard } from "@/components/PlaylistCard";
 import { artists } from "@/data/artists";
 import { playlists } from "@/data/playlists";
-import { Input } from "@/components/ui/input";
-import { Search, Filter, Disc, Music, Apple } from "lucide-react";
+import { SearchBar } from "@/components/SearchBar";
+import { Search, Disc, Music, Apple } from "lucide-react";
 import { motion } from "framer-motion";
+import { MetaTags } from "@/components/MetaTags";
 
 const AllPlaylists = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const querySearchTerm = searchParams.get("search") || "";
+  
   const [platform, setPlatform] = useState<"all" | "apple" | "spotify">("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(querySearchTerm);
+  
+  // Update URL when search changes
+  useEffect(() => {
+    if (searchTerm) {
+      searchParams.set("search", searchTerm);
+    } else {
+      searchParams.delete("search");
+    }
+    
+    const newUrl = searchParams.toString() 
+      ? `${location.pathname}?${searchParams}` 
+      : location.pathname;
+    
+    navigate(newUrl, { replace: true });
+  }, [searchTerm]);
+  
+  // Update search term when URL changes
+  useEffect(() => {
+    setSearchTerm(querySearchTerm);
+  }, [querySearchTerm]);
   
   const filteredPlaylists = playlists
     .filter(playlist => {
@@ -20,6 +46,8 @@ const AllPlaylists = () => {
       
       const artist = artists.find(a => a.id === playlist.artistId);
       const searchLower = searchTerm.toLowerCase();
+      
+      if (!searchTerm) return true;
       
       return (
         playlist.title.toLowerCase().includes(searchLower) ||
@@ -49,8 +77,21 @@ const AllPlaylists = () => {
     }
   };
   
+  const pageTitle = searchTerm 
+    ? `Search: ${searchTerm} | BUS Beats Archive` 
+    : "All Playlists | BUS Beats Archive";
+    
+  const pageDescription = searchTerm
+    ? `Playlists matching "${searchTerm}" from BUS artists on Apple Music and Spotify`
+    : "Discover all music playlists curated by your favorite BUS artists on Apple Music and Spotify";
+  
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+      <MetaTags 
+        title={pageTitle}
+        description={pageDescription}
+      />
+      
       <Header />
       
       {/* Hero Section */}
@@ -65,10 +106,13 @@ const AllPlaylists = () => {
           
           <div className="relative z-10">
             <h1 className="text-4xl md:text-5xl font-bold text-center mb-6 text-blue-50 drop-shadow-lg">
-              Discover BUS Artists' Playlists
+              {searchTerm ? `Results for "${searchTerm}"` : "Discover BUS Artists' Playlists"}
             </h1>
             <p className="text-center max-w-2xl mx-auto text-lg text-blue-100 mb-8">
-              Explore music curated by your favorite artists. Filter, search, and find new sounds.
+              {searchTerm 
+                ? `Found ${filteredPlaylists.length} playlists matching your search`
+                : "Explore music curated by your favorite artists. Filter, search, and find new sounds."
+              }
             </p>
           </div>
         </div>
@@ -80,29 +124,10 @@ const AllPlaylists = () => {
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search Input */}
             <div className="relative flex-1">
-              <div className={`relative overflow-hidden rounded-xl transition-all duration-300 ${
-                isSearchFocused ? "ring-2 ring-blue-400 shadow-lg" : "ring-1 ring-white/30 dark:ring-white/10"
-              }`}>
-                <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 transition-colors ${
-                  isSearchFocused ? "text-blue-500" : "text-muted-foreground"
-                }`} />
-                <Input 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setIsSearchFocused(false)}
-                  placeholder="Search by title, artist, or description..." 
-                  className="pl-10 pr-4 py-6 text-base bg-white/70 dark:bg-black/40 backdrop-blur-xl border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-                {searchTerm && (
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
+              <SearchBar 
+                className="w-full" 
+                isOpen={true}
+              />
             </div>
             
             {/* Platform Filters */}
