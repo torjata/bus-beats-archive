@@ -6,7 +6,7 @@ import { PlaylistCard } from "@/components/PlaylistCard";
 import { artists } from "@/data/artists";
 import { playlists } from "@/data/playlists";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Disc, Music } from "lucide-react";
+import { Search, Filter, Disc, Music, Apple } from "lucide-react";
 import { motion } from "framer-motion";
 
 const AllPlaylists = () => {
