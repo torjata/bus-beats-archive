@@ -10,13 +10,16 @@ import Artist from "./pages/Artist";
 import AllPlaylists from "./pages/AllPlaylists";
 import NotFound from "./pages/NotFound";
 import Playlist from "./pages/Playlist";
+import { useScrollToTopOnRouteChange } from "@/hooks/useScrollToTopOnRouteChange";
 
 const queryClient = new QueryClient();
 
 // AnimatePresence wrapper component to access location
 const AnimatedRoutes = () => {
   const location = useLocation();
-  
+  // เรียกใช้ Hook ตรงนี้เลย
+  useScrollToTopOnRouteChange();
+
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
