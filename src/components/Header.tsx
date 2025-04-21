@@ -13,8 +13,10 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur supports-backdrop-blur:bg-background/60 border-b">
       <div className="container flex h-16 items-center">
-        <div className="mr-4 flex">
-          <Link to="/" className="flex items-center gap-2">
+        <div className="mr-4 flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-1">
+            {/* Logo (ถ้ามีไฟล์โลโก้ใส่ public/logo.png), ใช้ <img /> หากมีภาพ */}
+            <img src="/logo.png" alt="BUS Beats Logo" className="h-10 w-10 object-contain" />
             <span className="hidden font-bold sm:inline-block text-xl bg-gradient-to-r from-music-purple to-music-purple-dark bg-clip-text text-transparent">
               BUS Beats
             </span>
@@ -34,7 +36,6 @@ export function Header() {
               Playlists
             </Link>
           </div>
-
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -74,8 +75,8 @@ export function Header() {
       {/* Search Bar */}
       {isSearchOpen && (
         <div className="container pb-4">
-          <SearchBar 
-            isOpen={isSearchOpen} 
+          <SearchBar
+            isOpen={isSearchOpen}
             onClose={() => setIsSearchOpen(false)}
             autoFocus={true}
           />
