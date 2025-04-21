@@ -2,6 +2,9 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MetaTags } from "@/components/MetaTags";
+import { ArtistCard } from "@/components/ArtistCard";
+import { artists } from "@/data/artists";
+import { getPlaylistCount } from "@/data/playlists";
 
 const Artists = () => (
   <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
@@ -12,10 +15,21 @@ const Artists = () => (
       url="/artists"
     />
     <Header />
-    <main className="flex-1 container py-16 flex flex-col items-center justify-center">
-      <h1 className="text-3xl md:text-5xl font-bold mb-4 text-blue-900 dark:text-blue-100">Artists</h1>
-      <p className="text-muted-foreground mb-12">All artists featured in BUS Beats will appear here soon!</p>
-      {/* สามารถเพิ่มรายชื่อศิลปินหรือ ArtistCard ตามต้องการ */}
+    <main className="flex-1 container py-16">
+      <h1 className="text-3xl md:text-5xl font-bold mb-4 text-blue-900 dark:text-blue-100 text-center">Artists</h1>
+      <p className="text-muted-foreground mb-12 text-center">ศิลปินทุกคนใน BUS Beats พร้อมลิงก์ไปยังโปรไฟล์และเพลย์ลิสต์ของแต่ละคน</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+        {artists.map((artist) => (
+          <ArtistCard
+            key={artist.id}
+            id={artist.id}
+            name={artist.name}
+            profileImage={artist.profileImage}
+            description={artist.description}
+            playlistCount={getPlaylistCount(artist.id)}
+          />
+        ))}
+      </div>
     </main>
     <Footer />
   </div>
